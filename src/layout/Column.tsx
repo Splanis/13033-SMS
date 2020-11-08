@@ -11,8 +11,7 @@ export default function Column({ children, justify, align, style }: PropTypes) {
   const styles = {
     flex: 1,
     alignItems: align ?? 'center',
-    justifyContent: justify ?? 'center',
-    fontFamily: 'serif'
+    justifyContent: justify ?? 'center'
   };
 
   return <View style={[styles, style]}>{children}</View>;
