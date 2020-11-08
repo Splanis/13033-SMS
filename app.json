@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "my-project",
-    "slug": "my-project",
+    "name": "13033 SMS",
+    "slug": "13033-SMS",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/13033_SMS_logo.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/13033_SMS_splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -14,17 +14,16 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/13033_SMS_logo.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.mariosg.SMS_13033",
+      "versionCode": 1
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/13033_SMS_logo.png"
     }
   }
 }
