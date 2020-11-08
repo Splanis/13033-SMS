@@ -63,6 +63,8 @@ const styles = StyleSheet.create({
   },
   buttonArea: {
     justifyContent: 'center',
-    height: 40
+    height: 40,
+    width: '100%',
+    paddingHorizontal: 20
   }
 });
