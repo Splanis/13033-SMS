@@ -1,12 +1,14 @@
 import { StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
 import React, { useContext } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import Column from '../layout/Column';
 import { ProfileContext } from './../context/AppContext';
 import { validateProfile } from './../validators/validateProfile';
 import { Button } from './components/Button';
 import { Title } from './components/Title';
 import { ScreensParamList } from './ScreensParamList';
+
+const errrorMessage = 'Πρέπει να βάλεις τουλάχιστον ένα χαρακτήρα';
 
 type PropTypes = {
   navigation: StackNavigationProp<ScreensParamList, 'ProfileScreen'>;
@@ -29,6 +31,7 @@ export default function ProfileScreen({ navigation }: PropTypes) {
           placeholder="Όνομα"
           selectionColor={'#376996'}
         />
+        <Text style={styles.error}>{!profile.firstName && errrorMessage}</Text>
         <TextInput
           onChangeText={(text) => handleChangeText(text, 'lastName')}
           value={profile.lastName}
@@ -36,6 +39,7 @@ export default function ProfileScreen({ navigation }: PropTypes) {
           placeholder="Επώνυμο"
           selectionColor={'#376996'}
         />
+        <Text style={styles.error}>{!profile.lastName && errrorMessage}</Text>
         <TextInput
           onChangeText={(text) => handleChangeText(text, 'address')}
           value={profile.address}
@@ -43,7 +47,8 @@ export default function ProfileScreen({ navigation }: PropTypes) {
           placeholder="Διεύθυνση"
           selectionColor={'#376996'}
         />
-        <View style={{ marginTop: 10 }}>
+        <Text style={styles.error}>{!profile.address && errrorMessage}</Text>
+        <View>
           {validateProfile(profile) && (
             <Button onPress={() => navigation.navigate('SmsScreen')}>Έτοιμος!</Button>
           )}
@@ -61,10 +66,15 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     paddingVertical: 17,
     paddingHorizontal: 25,
-    marginVertical: 10,
+    marginVertical: 0,
     fontSize: 16
   },
   title: {
     fontSize: 20
+  },
+  error: {
+    color: 'tomato',
+    height: 30,
+    padding: 5
   }
 });
