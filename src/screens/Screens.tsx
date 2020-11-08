@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, Alert } from 'react-native';
 import { ProfileContext } from './../context/AppContext';
 import Column from '../layout/Column';
 import { validateProfile } from './../validators/validateProfile';
@@ -27,7 +27,7 @@ export function Screens() {
           setLoading(false);
         }
       } catch (error) {
-        alert('Προέκυψε κάποιο σφάλμα');
+        Alert.alert('Προέκυψε κάποιο σφάλμα');
         setLoading(false);
       }
     })();

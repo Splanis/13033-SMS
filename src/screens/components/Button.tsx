@@ -36,7 +36,6 @@ const styles = StyleSheet.create<StyleProps>({
   },
   buttonText: {
     fontSize: 18,
-    color: 'white',
-    fontFamily: 'Arial'
+    color: 'white'
   }
 });
