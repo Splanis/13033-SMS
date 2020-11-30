@@ -1,6 +1,6 @@
-import { ProfilePropTypes } from '../context/AppContext';
+import { Profile } from '../context/AppContext';
 
-export const validateProfile = (profile: any): profile is ProfilePropTypes => {
+export const validateProfile = (profile: any): profile is Profile => {
   if (
     typeof profile.firstName == 'string' &&
     typeof profile.lastName == 'string' &&
