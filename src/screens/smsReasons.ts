@@ -1,7 +1,7 @@
 export type SmsNumber = 1 | 2 | 3 | 4 | 5 | 6;
 
 export type Reason = {
-  number: SmsNumber | null;
+  number: SmsNumber;
   label: string;
 };
 
