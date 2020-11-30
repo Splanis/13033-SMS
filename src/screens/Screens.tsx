@@ -4,8 +4,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert } from 'react-native';
-import { ProfileContext } from './../context/AppContext';
 import Column from '../layout/Column';
+import { primary, secondary } from '../theme/colors';
+import { ProfileContext } from './../context/AppContext';
 import { validateProfile } from './../validators/validateProfile';
 import ProfileScreen from './ProfileScreen';
 import { ScreensParamList } from './ScreensParamList';
@@ -58,7 +59,7 @@ export function Screens() {
               <Ionicons
                 name={iconName}
                 size={size}
-                color={focused ? '#376996' : '#c4d5eb'}
+                color={focused ? primary : secondary}
               />
             );
           },
