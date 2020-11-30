@@ -8,28 +8,29 @@ import React, {
   useState
 } from 'react';
 
-export type ProfilePropTypes = {
+export type Profile = {
   firstName: string;
   lastName: string;
+  addresses: string[];
   address: string;
 };
 
-type ProfileContextPropTypes = {
-  profile: ProfilePropTypes;
-  setProfile: Dispatch<SetStateAction<ProfilePropTypes>>;
+type ProfileContext = {
+  profile: Profile;
+  setProfile: Dispatch<SetStateAction<Profile>>;
 };
 
-export const ProfileContext = createContext<ProfileContextPropTypes>(
-  {} as ProfileContextPropTypes
-);
+export const ProfileContext = createContext<ProfileContext>({} as ProfileContext);
 
-type ProfileProviderPropTypes = {
+type ProfileProvider = {
   children: ReactNode;
 };
-export function ProfileProvider({ children }: ProfileProviderPropTypes) {
-  const [profile, setProfile] = useState<ProfilePropTypes>({
+
+export function ProfileProvider({ children }: ProfileProvider) {
+  const [profile, setProfile] = useState<Profile>({
     firstName: '',
     lastName: '',
+    addresses: [],
     address: ''
   });
 
