@@ -151,7 +151,8 @@ const styles = StyleSheet.create({
   error: {
     color: error,
     height: 30,
-    paddingVertical: 5
+    paddingVertical: 5,
+    textAlign: 'center'
   },
   pill: {
     borderRadius: 24,
