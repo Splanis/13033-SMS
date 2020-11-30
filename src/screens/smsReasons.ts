@@ -1,11 +1,11 @@
-import { smsNumberType } from './SmsScreen';
+export type SmsNumber = 1 | 2 | 3 | 4 | 5 | 6;
 
-export type ReasonType = {
-  number: smsNumberType;
+export type Reason = {
+  number: SmsNumber | null;
   label: string;
 };
 
-export const smsReasons: ReasonType[] = [
+export const smsReasons: Reason[] = [
   { number: 1, label: 'Μετάβαση σε φαρμακείο ή στον γιατρό' },
   { number: 2, label: 'Μετάβαση σε κατάστημα βασικών αγαθών' },
   { number: 3, label: 'Μετάβαση σε δημόσια υπηρεσία ή τράπεζα' },
