@@ -2,31 +2,41 @@ import { StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/
 import React, { useContext, useState } from 'react';
 import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Column from '../layout/Column';
+import { secondary } from '../theme/colors';
 import { ProfileContext } from './../context/AppContext';
 import { validateProfile } from './../validators/validateProfile';
 import { Button } from './components/Button';
 import { Title } from './components/Title';
 import { ScreensParamList } from './ScreensParamList';
-import { ReasonType, smsReasons } from './smsReasons';
+import { Reason, SmsNumber, smsReasons } from './smsReasons';
 
-type PropTypes = {
+type Props = {
   navigation: StackNavigationProp<ScreensParamList, 'ProfileScreen'>;
 };
-export default function SmsScreen({ navigation }: PropTypes) {
-  const [smsNumber, setSmsNumber] = useState<1 | 2 | 3 | 4 | 5 | 6 | null>(null);
-  const { profile } = useContext(ProfileContext);
 
-  const sendMessage = () => {
+export default function SmsScreen({ navigation }: Props) {
+  const [smsNumber, setSmsNumber] = useState<SmsNumber | null>(null);
+  const { profile, setProfile } = useContext(ProfileContext);
+
+  const handlePress = () => {
     const SMSReceiver = '13033';
     const message = `${smsNumber} ${profile.firstName} ${profile.lastName} ${profile.address}`;
     Linking.openURL(`sms:${SMSReceiver}?body=${message}`);
+
+    setProfile({
+      ...profile,
+      addresses: profile.addresses.includes(profile.address)
+        ? profile.addresses
+        : [profile.address, ...profile.addresses]
+    });
   };
 
   return (
     <Column justify="space-evenly">
       <Title style={{ marginTop: 30 }}>Επιλέξτε τον λόγο μετακίνησης</Title>
-      {smsReasons.map(({ number, label }: ReasonType) => (
+      {smsReasons.map(({ number, label }: Reason) => (
         <TouchableOpacity
+          key={number}
           style={[styles.smsNumber, smsNumber === number && styles.active]}
           onPress={() => setSmsNumber(number)}>
           <Text>{label}</Text>
@@ -39,9 +49,7 @@ export default function SmsScreen({ navigation }: PropTypes) {
           </Button>
         ) : (
           smsNumber &&
-          validateProfile(profile) && (
-            <Button onPress={() => sendMessage()}>Αποστολή SMS</Button>
-          )
+          validateProfile(profile) && <Button onPress={handlePress}>Αποστολή SMS</Button>
         )}
       </View>
     </Column>
@@ -58,7 +66,7 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   active: {
-    backgroundColor: '#c4d5eb',
+    backgroundColor: secondary,
     borderRadius: 50
   },
   buttonArea: {

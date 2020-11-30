@@ -1,56 +1,118 @@
 import { StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
-import React, { useContext } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useCallback, useContext } from 'react';
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import Column from '../layout/Column';
+import { error, primary, secondary } from '../theme/colors';
 import { ProfileContext } from './../context/AppContext';
 import { validateProfile } from './../validators/validateProfile';
 import { Button } from './components/Button';
 import { Title } from './components/Title';
 import { ScreensParamList } from './ScreensParamList';
 
-const errrorMessage = 'Πρέπει να βάλεις τουλάχιστον ένα χαρακτήρα';
+const errorMessage = 'Πρέπει να βάλεις τουλάχιστον ένα χαρακτήρα';
 
-type PropTypes = {
+type Props = {
   navigation: StackNavigationProp<ScreensParamList, 'ProfileScreen'>;
 };
-export default function ProfileScreen({ navigation }: PropTypes) {
+
+export default function ProfileScreen({ navigation }: Props) {
   const { profile, setProfile } = useContext(ProfileContext);
 
-  const handleChangeText = (text: string, name: 'firstName' | 'lastName' | 'address') => {
-    setProfile({ ...profile, [name]: text });
-  };
+  const handlePressButton = useCallback(() => {
+    navigation.navigate('SmsScreen');
+    setProfile({
+      ...profile,
+      addresses: profile.addresses.includes(profile.address)
+        ? profile.addresses
+        : [profile.address, ...profile.addresses]
+    });
+  }, [profile]);
+
+  const handleLongPress = useCallback(
+    (address) => {
+      Alert.alert(
+        'Διαγραφή Διέθυνσης',
+        'Θέλετε να διαγράψετε σίγουρα την διεύθυνση;',
+        [
+          {
+            text: 'Όχι',
+            style: 'cancel'
+          },
+          {
+            text: 'Ναι',
+            onPress: () =>
+              setProfile({
+                ...profile,
+                addresses: profile.addresses.filter((a) => a !== address)
+              })
+          }
+        ],
+        { cancelable: false }
+      );
+    },
+    [profile]
+  );
 
   return (
-    <Column justify="center">
+    <Column>
       <Title>Στοιχεία Μηνύματος</Title>
-      <View style={{ width: '100%', padding: 30, justifyContent: 'center' }}>
+      <View style={styles.container}>
         <TextInput
-          onChangeText={(text) => handleChangeText(text, 'firstName')}
+          onChangeText={(text) => setProfile({ ...profile, firstName: text })}
           value={profile.firstName}
           style={styles.input}
           placeholder="Όνομα"
-          selectionColor={'#376996'}
+          selectionColor={primary}
         />
-        <Text style={styles.error}>{!profile.firstName && errrorMessage}</Text>
+        <Text style={styles.error}>{!profile.firstName && errorMessage}</Text>
         <TextInput
-          onChangeText={(text) => handleChangeText(text, 'lastName')}
+          onChangeText={(text) => setProfile({ ...profile, lastName: text })}
           value={profile.lastName}
           style={styles.input}
           placeholder="Επώνυμο"
-          selectionColor={'#376996'}
+          selectionColor={primary}
         />
-        <Text style={styles.error}>{!profile.lastName && errrorMessage}</Text>
+        <Text style={styles.error}>{!profile.lastName && errorMessage}</Text>
         <TextInput
-          onChangeText={(text) => handleChangeText(text, 'address')}
+          onChangeText={(text) => setProfile({ ...profile, address: text })}
           value={profile.address}
           style={styles.input}
           placeholder="Διεύθυνση"
-          selectionColor={'#376996'}
+          selectionColor={primary}
         />
-        <Text style={styles.error}>{!profile.address && errrorMessage}</Text>
+        <Text style={[styles.error, { display: !profile.address ? 'flex' : 'none' }]}>
+          {errorMessage}
+        </Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{
+            paddingVertical: profile.address ? 5 : 0,
+            marginBottom: profile.addresses.length > 0 ? 0 : 20
+          }}>
+          {profile.addresses &&
+            profile.addresses.map((address, index) => (
+              <AddressPill
+                onSelect={() => setProfile({ ...profile, address })}
+                onLongPress={() => {
+                  handleLongPress(address);
+                }}
+                key={index}
+                address={address}
+              />
+            ))}
+        </ScrollView>
         <View>
           {validateProfile(profile) && (
-            <Button onPress={() => navigation.navigate('SmsScreen')}>Έτοιμος!</Button>
+            <Button onPress={handlePressButton}>Έτοιμος!</Button>
           )}
         </View>
       </View>
@@ -58,10 +120,23 @@ export default function ProfileScreen({ navigation }: PropTypes) {
   );
 }
 
+type AddressPillProps = {
+  address: string;
+  onSelect: () => void;
+  onLongPress: () => void;
+};
+
+function AddressPill({ address, onSelect, onLongPress }: AddressPillProps) {
+  return (
+    <TouchableOpacity onPress={onSelect} onLongPress={onLongPress}>
+      <Text style={styles.pill}>{address}</Text>
+    </TouchableOpacity>
+  );
+}
+
 const styles = StyleSheet.create({
   input: {
     width: '100%',
-    borderColor: 'grey',
     backgroundColor: 'white',
     borderRadius: 50,
     paddingVertical: 17,
@@ -69,12 +144,21 @@ const styles = StyleSheet.create({
     marginVertical: 0,
     fontSize: 16
   },
+  container: { width: '100%', padding: 30 },
   title: {
     fontSize: 20
   },
   error: {
-    color: 'tomato',
+    color: error,
     height: 30,
-    padding: 5
+    paddingVertical: 5
+  },
+  pill: {
+    borderRadius: 24,
+    backgroundColor: secondary,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    marginHorizontal: 5,
+    marginVertical: 15
   }
 });
