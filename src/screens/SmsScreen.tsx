@@ -1,9 +1,18 @@
 import { StackNavigationProp } from '@react-navigation/stack/lib/typescript/src/types';
-import React, { useContext, useState } from 'react';
-import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Column from '../layout/Column';
+import React, { useState } from 'react';
+import {
+  Linking,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle
+} from 'react-native';
+import { Column } from '../layout/Column';
 import { secondary } from '../theme/colors';
-import { ProfileContext } from './../context/AppContext';
+import { useProfile } from './../context/AppContext';
+import { saveAddress } from './../context/reducers';
 import { validateProfile } from './../validators/validateProfile';
 import { Button } from './components/Button';
 import { Title } from './components/Title';
@@ -14,26 +23,21 @@ type Props = {
   navigation: StackNavigationProp<ScreensParamList, 'ProfileScreen'>;
 };
 
-export default function SmsScreen({ navigation }: Props) {
+export function SmsScreen({ navigation }: Props) {
   const [smsNumber, setSmsNumber] = useState<SmsNumber | null>(null);
-  const { profile, setProfile } = useContext(ProfileContext);
+  const { state, dispatch } = useProfile();
+  const { firstName, lastName, address } = state;
 
   const handlePress = () => {
     const SMSReceiver = '13033';
-    const message = `${smsNumber} ${profile.firstName} ${profile.lastName} ${profile.address}`;
+    const message = `${smsNumber} ${firstName} ${lastName} ${address}`;
     Linking.openURL(`sms:${SMSReceiver}?body=${message}`);
-
-    setProfile({
-      ...profile,
-      addresses: profile.addresses.includes(profile.address)
-        ? profile.addresses
-        : [profile.address, ...profile.addresses]
-    });
+    dispatch(saveAddress());
   };
 
   return (
     <Column justify="space-evenly">
-      <Title style={{ marginTop: 30 }}>Επιλέξτε τον λόγο μετακίνησης</Title>
+      <Title style={styles.title}>Επιλέξτε τον λόγο μετακίνησης</Title>
       {smsReasons.map(({ number, label }: Reason) => (
         <TouchableOpacity
           key={number}
@@ -43,27 +47,33 @@ export default function SmsScreen({ navigation }: Props) {
         </TouchableOpacity>
       ))}
       <View style={styles.buttonArea}>
-        {!validateProfile(profile) ? (
+        {!validateProfile(state) ? (
           <Button onPress={() => navigation.navigate('ProfileScreen')}>
             Συμπλήρωσε τα στοιχεία σου!
           </Button>
         ) : (
           smsNumber &&
-          validateProfile(profile) && <Button onPress={handlePress}>Αποστολή SMS</Button>
+          validateProfile(state) && <Button onPress={handlePress}>Αποστολή SMS</Button>
         )}
       </View>
     </Column>
   );
 }
 
-const styles = StyleSheet.create({
+type Styles = {
+  smsNumber: ViewStyle;
+  title: TextStyle;
+  active: ViewStyle;
+  buttonArea: ViewStyle;
+};
+
+const styles = StyleSheet.create<Styles>({
   smsNumber: {
     paddingVertical: 15,
     paddingHorizontal: 20
   },
   title: {
-    fontSize: 20,
-    marginTop: 20
+    marginTop: 30
   },
   active: {
     backgroundColor: secondary,

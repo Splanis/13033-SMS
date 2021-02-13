@@ -5,10 +5,10 @@ type Props = {
   children: ReactNode;
   justify?: FlexStyle['justifyContent'];
   align?: FlexStyle['alignItems'];
-  style?: StyleProp<FlexStyle | ViewStyle | TextStyle>
+  style?: StyleProp<FlexStyle | ViewStyle | TextStyle>;
 };
 
-export default function Column({ children, justify, align, style }: Props) {
+export function Column({ children, justify, align, style }: Props) {
   const styles = {
     flex: 1,
     alignItems: align ?? 'center',

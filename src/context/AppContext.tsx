@@ -3,10 +3,11 @@ import React, {
   createContext,
   Dispatch,
   ReactNode,
-  SetStateAction,
+  useContext,
   useEffect,
-  useState
+  useReducer
 } from 'react';
+import { Action, initialState, reducer, State } from './reducers';
 
 export type Profile = {
   firstName: string;
@@ -16,8 +17,8 @@ export type Profile = {
 };
 
 type ProfileContext = {
-  profile: Profile;
-  setProfile: Dispatch<SetStateAction<Profile>>;
+  state: State;
+  dispatch: Dispatch<Action>;
 };
 
 export const ProfileContext = createContext<ProfileContext>({} as ProfileContext);
@@ -27,24 +28,21 @@ type ProfileProvider = {
 };
 
 export function ProfileProvider({ children }: ProfileProvider) {
-  const [profile, setProfile] = useState<Profile>({
-    firstName: '',
-    lastName: '',
-    addresses: [],
-    address: ''
-  });
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
     (async () => {
       try {
-        await AsyncStorage.setItem('profile', JSON.stringify(profile));
+        await AsyncStorage.setItem('profile', JSON.stringify(state));
       } catch (error) {}
     })();
-  }, [profile]);
+  }, [state]);
 
   return (
-    <ProfileContext.Provider value={{ profile, setProfile }}>
+    <ProfileContext.Provider value={{ state, dispatch }}>
       {children}
     </ProfileContext.Provider>
   );
 }
+
+export const useProfile = () => useContext(ProfileContext);

@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { primary } from '../../theme/colors';
 import {
   StyleSheet,
   Text,
@@ -22,13 +23,14 @@ export function Button({ children, onPress, style }: PropTypes) {
   );
 }
 
-type StyleProps = {
+type Style = {
   button: FlexStyle | ViewStyle;
   buttonText: TextStyle;
 };
-const styles = StyleSheet.create<StyleProps>({
+
+const styles = StyleSheet.create<Style>({
   button: {
-    backgroundColor: '#376996',
+    backgroundColor: primary,
     borderRadius: 50,
     width: '100%',
     paddingVertical: 15,

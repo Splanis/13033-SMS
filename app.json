@@ -24,6 +24,9 @@
     },
     "web": {
       "favicon": "./assets/13033_SMS_logo.png"
+    },
+    "packagerOpts": {
+      "sourceExts": ["js", "ts", "tsx", "jsx"]
     }
   }
 }
